@@ -1,0 +1,58 @@
+import os
+import requests
+import pandas as pd
+from datetime import datetime, timezone
+
+HEADERS = {"User-Agent": "AirGuard.AI-prototype (your_email@example.com)"}
+LAT, LON = 40.7128, -74.0060
+ZIP_CODE = "10001"
+API_KEY = os.environ.get("AIRNOW_API_KEY")
+
+# --- NOAA weather ---
+points = requests.get(f"https://api.weather.gov/points/{LAT},{LON}", headers=HEADERS, timeout=10).json()
+stations_url = points["properties"]["observationStations"]
+stations = requests.get(stations_url, headers=HEADERS, timeout=10).json()
+station_id = stations["features"][0]["properties"]["stationIdentifier"]
+
+obs = requests.get(
+    f"https://api.weather.gov/stations/{station_id}/observations/latest",
+    headers=HEADERS, timeout=10
+).json()["properties"]
+
+temperature_c = obs["temperature"]["value"]
+humidity_pct = obs["relativeHumidity"]["value"]
+wind_kmh = obs["windSpeed"]["value"]
+
+# --- AirNow air quality ---
+airnow_resp = requests.get(
+    "https://www.airnowapi.org/aq/observation/zipCode/current/",
+    params={
+        "format": "application/json",
+        "zipCode": ZIP_CODE,
+        "distance": 25,
+        "API_KEY": API_KEY,
+    },
+    timeout=10,
+).json()
+
+pm25_aqi = None
+ozone_aqi = None
+for entry in airnow_resp:
+    if entry["ParameterName"] == "PM2.5":
+        pm25_aqi = entry["AQI"]
+    elif entry["ParameterName"] == "O3":
+        ozone_aqi = entry["AQI"]
+
+# --- Combine into one row ---
+row = {
+    "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+    "station_id": station_id,
+    "temperature_c": temperature_c,
+    "humidity_pct": humidity_pct,
+    "wind_kmh": wind_kmh,
+    "pm25_aqi": pm25_aqi,
+    "ozone_aqi": ozone_aqi,
+}
+
+df = pd.DataFrame([row])
+print(df.to_string(index=False))
