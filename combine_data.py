@@ -56,3 +56,26 @@ row = {
 
 df = pd.DataFrame([row])
 print(df.to_string(index=False))
+import psycopg2
+
+conn = psycopg2.connect(os.environ.get("DATABASE_URL"))
+cur = conn.cursor()
+
+cur.execute("""
+    INSERT INTO readings (timestamp_utc, station_id, temperature_c, humidity_pct, wind_kmh, pm25_aqi, ozone_aqi)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+""", (
+    row["timestamp_utc"],
+    row["station_id"],
+    row["temperature_c"],
+    row["humidity_pct"],
+    row["wind_kmh"],
+    row["pm25_aqi"],
+    row["ozone_aqi"],
+))
+
+conn.commit()
+cur.close()
+conn.close()
+
+print("Row saved to database.")
