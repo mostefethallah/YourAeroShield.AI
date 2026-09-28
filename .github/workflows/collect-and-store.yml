@@ -29,3 +29,7 @@ jobs:
 
       - name: Collect and store reading
         run: python3 collect_and_store.py
+
+      - name: Simulate indoor reading
+        run: python3 simulate_indoor.py
+
