@@ -3,7 +3,7 @@ import requests
 import psycopg2
 from datetime import datetime, timezone
 
-HEADERS = {"User-Agent": "AirGuard.AI-prototype (youraeroshield@gmail.com)"}
+HEADERS = {"User-Agent": "YourAeroShield.AI-prototype (youraeroshield@gmail.com)"}
 LAT, LON = 40.7128, -74.0060
 ZIP_CODE = "10001"
 API_KEY = os.environ.get("AIRNOW_API_KEY")
