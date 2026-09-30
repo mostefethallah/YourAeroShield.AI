@@ -1,7 +1,7 @@
 import requests
 
 url = "https://api.weather.gov/points/40.7128,-74.0060"
-headers = {"User-Agent": "AirGuard.AI-prototype (mostefethallah@gmail.com)"}
+headers = {"User-Agent": "YourAeroShield.AI-prototype (youraeroshield@gmail.com)"}
 
 response = requests.get(url, headers=headers, timeout=10)
 
