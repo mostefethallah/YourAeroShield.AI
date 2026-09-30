@@ -1,6 +1,6 @@
 import requests
 
-HEADERS = {"User-Agent": "AirGuard.AI-prototype (mostefethallah@gmail.com)"}
+HEADERS = {"User-Agent": "YourAeroShield.AI-prototype (youraeroshield@gmail.com)"}
 LAT, LON = 40.7128, -74.0060
 
 # 1. Ask NOAA about our location
