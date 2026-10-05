@@ -3,11 +3,11 @@ import requests
 import psycopg2
 from datetime import datetime, timezone
 
-HEADERS = {"User-Agent": "YourAeroShield.AI-prototype (youraeroshield@gmail.com)"}
+HEADERS = {"User-Agent": "YourAeroShield-prototype (your_real_email@example.com)"}
 LAT, LON = 40.7128, -74.0060
 ZIP_CODE = "10001"
 API_KEY = os.environ.get("AIRNOW_API_KEY")
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL") or os.environ.get("NEON_DATABASE_URL")
 
 
 def collect_one_reading():
@@ -22,18 +22,21 @@ def collect_one_reading():
     ).json()["properties"]
 
     airnow_resp = requests.get(
-        "https://www.airnowapi.org/aq/observation/zipCode/current/",
-        params={"format": "application/json", "zipCode": ZIP_CODE, "distance": 25, "API_KEY": API_KEY},
+        "https://www.airnowapi.org/aq/observation/current/ziplatlong/",
+        params={"format": "application/json", "zipCode": ZIP_CODE, "API_KEY": API_KEY},
         timeout=10,
     ).json()
 
     pm25_aqi = None
     ozone_aqi = None
-    for entry in airnow_resp:
-        if entry["ParameterName"] == "PM2.5":
-            pm25_aqi = entry["AQI"]
-        elif entry["ParameterName"] == "O3":
-            ozone_aqi = entry["AQI"]
+    if isinstance(airnow_resp, list):
+        for entry in airnow_resp:
+            if entry.get("parameterName") == "PM2.5":
+                pm25_aqi = entry.get("nowcastAQI")
+            elif entry.get("parameterName") == "O3":
+                ozone_aqi = entry.get("nowcastAQI")
+    else:
+        print("AirNow returned unexpected response:", airnow_resp)
 
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
