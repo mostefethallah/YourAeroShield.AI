@@ -3,7 +3,7 @@ import requests
 import psycopg2
 from datetime import datetime, timezone
 
-HEADERS = {"User-Agent": "YourAeroShield-prototype (your_real_email@example.com)"}
+HEADERS = {"User-Agent": "YourAeroShield-prototype (yoUR.com)"}
 LAT, LON = 40.7128, -74.0060
 ZIP_CODE = "10001"
 API_KEY = os.environ.get("AIRNOW_API_KEY")
@@ -21,11 +21,17 @@ def collect_one_reading():
         headers=HEADERS, timeout=10
     ).json()["properties"]
 
-    airnow_resp = requests.get(
-        "https://www.airnowapi.org/aq/observation/current/ziplatlong/",
-        params={"format": "application/json", "zipCode": ZIP_CODE, "API_KEY": API_KEY},
-        timeout=10,
-    ).json()
+    try:
+        r = requests.get(
+            "https://www.airnowapi.org/aq/observation/current/ziplatlong/",
+            params={"format": "application/json", "zipCode": ZIP_CODE, "API_KEY": API_KEY},
+            timeout=10,
+        )
+        r.raise_for_status()
+        airnow_resp = r.json()
+    except Exception as e:
+        print("AirNow unavailable:", e)
+        airnow_resp = []
 
     pm25_aqi = None
     ozone_aqi = None
@@ -33,7 +39,7 @@ def collect_one_reading():
         for entry in airnow_resp:
             if entry.get("parameterName") == "PM2.5":
                 pm25_aqi = entry.get("nowcastAQI")
-            elif entry.get("parameterName") == "O3":
+            elif entry.get("parameterName") in ("O3", "OZONE"):
                 ozone_aqi = entry.get("nowcastAQI")
     else:
         print("AirNow returned unexpected response:", airnow_resp)
@@ -68,6 +74,6 @@ if __name__ == "__main__":
     try:
         row = collect_one_reading()
         save_reading(row)
-        print("Saved:", row["timestamp_utc"], row["pm25_aqi"], row["temperature_c"])
+        print("Saved:", row["timestamp_utc"], row["pm25_aqi"], row["temperature_c"], row["ozone_aqi"])
     except Exception as e:
         print("Error:", e)
