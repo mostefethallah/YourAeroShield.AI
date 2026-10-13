@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timezone
 import psycopg2
 
-DATABASE_URL = os.environ.get("DATABASE_URL") or os.environ["NEON_DATABASE_URL"]
+DATABASE_URL = os.environ.get("NEON_DATABASE_URL") or os.environ.get("DATABASE_URL")
 
 ROOM_ID = "sim-room-1"
 
