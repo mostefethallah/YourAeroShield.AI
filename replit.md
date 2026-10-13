@@ -1,6 +1,6 @@
-# AirGuard-AI
+# YourAeroShield-AI
 
-Minimal Python project scaffold for AirGuard-AI.
+Minimal Python project scaffold for YourAeroShield-AI.
 
 ## Run & Operate
 
