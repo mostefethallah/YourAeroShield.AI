@@ -81,3 +81,7 @@ packages = ["glibcLocales"]
 
 [userenv.shared]
 AIRNOW_API_KEY = "03EE444C-3F1D-4201-A8A1-DE433864B022"
+
+[[ports]]
+localPort = 8501
+externalPort = 80
