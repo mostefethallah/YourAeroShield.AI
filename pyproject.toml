@@ -8,6 +8,7 @@ dependencies = [
     "pandas>=3.0.6",
     "psycopg2-binary>=2.9.13",
     "requests>=2.34.2",
+    "scikit-learn>=1.9.1",
     "streamlit>=1.65.0",
     "uvicorn>=0.54.0",
 ]
