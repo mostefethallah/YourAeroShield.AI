@@ -38,6 +38,7 @@ st.title("YourAeroShield")
 st.caption("Outdoor: NOAA + EPA AirNow (New York, ZIP 10001) · Indoor: sim-room-1 (simulated data)")
 
 days = st.sidebar.slider("Days of history", 1, 14, 3)
+outdoor, indoor = load(days)
 for col in ["temperature_c", "humidity_pct", "pm25_aqi", "ozone_aqi"]:
     outdoor[col] = pd.to_numeric(outdoor[col], errors="coerce")
 for col in ["pm25_ugm3", "temperature_c", "humidity_pct", "co2_ppm"]:
