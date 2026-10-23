@@ -1,6 +1,6 @@
 import os, psycopg2
 
-conn = psycopg2.connect(os.environ["NEON_DATABASE_URL"])
+conn = psycopg2.connect(os.environ["SUPABASE_DB_URL"])
 
 cur = conn.cursor()
 cur.execute("""

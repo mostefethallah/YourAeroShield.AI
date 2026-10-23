@@ -4,7 +4,7 @@ import psycopg2
 import streamlit as st
 
 st.set_page_config(page_title="YourAeroShield", layout="wide")
-DB_URL = os.environ.get("NEON_DATABASE_URL") or os.environ.get("DATABASE_URL")
+DB_URL = os.environ.get("SUPABASE_DB_URL") or os.environ.get("DATABASE_URL")
 
 # EPA PM2.5 breakpoints: (AQI low, AQI high, µg/m³ low, µg/m³ high)
 PM25_BREAKPOINTS = [

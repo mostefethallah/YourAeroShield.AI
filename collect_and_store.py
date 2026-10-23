@@ -7,7 +7,7 @@ HEADERS = {"User-Agent": "YourAeroShield-prototype (yoUR.com)"}
 LAT, LON = 40.7128, -74.0060
 ZIP_CODES = ["10001", "07302", "06902"]  # New York first, then Jersey City, Stamford
 API_KEY = os.environ.get("AIRNOW_API_KEY")
-DATABASE_URL = os.environ.get("NEON_DATABASE_URL") or os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get("SUPABASE_DB_URL") or os.environ.get("DATABASE_URL")
 
 
 def fetch_airnow(zip_code):
